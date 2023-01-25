@@ -3,10 +3,31 @@ import Header from "./components/Header";
 import Drawer from "./components/Drawer";
 
 function App() {
+  const sneakers = [
+    {
+      description: "rinat",
+      imgUrl: "/img/sneakers/1.jpg",
+      price: 770,
+    },
+    {
+      description: "azamat",
+      imgUrl: "/img/sneakers/2.jpg",
+      price: 230,
+    },
+    {
+      description: "kanat",
+      imgUrl: "/img/sneakers/3.jpg",
+      price: 1540,
+    },
+    {
+      description: "rustam",
+      imgUrl: "/img/sneakers/4.jpg",
+      price: 840,
+    },
+  ];
   return (
     <div className="wrapper clear">
       <Drawer />
-
       <Header />
       <div className="content p-40">
         <div className="d-flex align-center justify-between mb-40">
@@ -17,56 +38,14 @@ function App() {
           </div>
         </div>
         <div className="d-flex flex-wrap">
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/1.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/2.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/3.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/4.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/5.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/6.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/7.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/8.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/9.jpg"
-          />
-          <Card
-            description="i love yoo"
-            price={200}
-            imgPath="/img/sneakers/10.jpg"
-          />
+          {sneakers.map((x) => (
+            <Card
+              key={x.imgUrl}
+              description={x.description}
+              imgUrl={x.imgUrl}
+              price={x.price}
+            />
+          ))}
         </div>
       </div>
     </div>

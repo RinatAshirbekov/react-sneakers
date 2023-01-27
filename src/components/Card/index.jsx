@@ -1,14 +1,23 @@
+import React from "react";
 import styles from "./Card.module.scss";
 console.log(styles);
 function Card(props) {
-  const onClickButton = (a, b, c) => {
-    console.log(a.target);
-    console.log(b + c);
-  };
+  const [isAdded, setIsAdded] = React.useState(false);
+  // const onClickPlus = () => {
+  //   setIsAdded(!isAdded);
+  // };
+
+  React.useEffect(() => {
+    console.log("isAdded izmenilsya");
+  }, [isAdded]);
+  // const onClickButton = (a, b, c) => {
+  //   console.log(a.target);
+  //   console.log(b + c);
+  // };
 
   return (
     <div className={styles.card}>
-      <div className={styles.favorite}>
+      <div className={styles.favorite} onClick={props.onFavorite}>
         <img src="/img/heart-unliked.svg" alt="" />
       </div>
       <img width={133} height={112} src={props.imgUrl} alt="Sneakers" />
@@ -18,9 +27,18 @@ function Card(props) {
           <span>Цена: </span>
           <b>{props.price} rub.</b>
         </div>
-        <button className="button" onClick={(a) => onClickButton(a, 2, 5)}>
+        {/* <button className="button" onClick={(a) => props.onPlus()}>
           <img width={11} height={11} src="/img/btn-plus.svg" alt="Plus" />
-        </button>
+        </button> */}
+        <img
+          className={styles.plus}
+          onClick={() => {
+            props.onPlus();
+            setIsAdded(!isAdded);
+          }}
+          src={isAdded ? "/img/btn-checked.svg" : "/img/btn-plus.svg"}
+          alt="Plus"
+        />
       </div>
     </div>
   );

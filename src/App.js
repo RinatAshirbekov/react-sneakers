@@ -1,34 +1,41 @@
 import Card from "./components/Card";
 import Header from "./components/Header";
 import Drawer from "./components/Drawer";
+import React from "react";
 
 function App() {
-  const sneakers = [
-    {
-      description: "rinat",
-      imgUrl: "/img/sneakers/1.jpg",
-      price: 770,
-    },
-    {
-      description: "azamat",
-      imgUrl: "/img/sneakers/2.jpg",
-      price: 230,
-    },
-    {
-      description: "kanat",
-      imgUrl: "/img/sneakers/3.jpg",
-      price: 1540,
-    },
-    {
-      description: "rustam",
-      imgUrl: "/img/sneakers/4.jpg",
-      price: 840,
-    },
-  ];
+  const [cardOpened, setCardOpened] = React.useState(false);
+  const [cartSneakers, setCartSneakers] = React.useState([]);
+  const [sneakers, setSneakers] = React.useState([]);
+
+  React.useEffect(() => {
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+    fetch("https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/Items", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setSneakers(result);
+      })
+      .catch((error) => console.log("error", error));
+  }, []);
+
   return (
     <div className="wrapper clear">
-      <Drawer />
-      <Header />
+      {cardOpened && (
+        <Drawer
+          items={cartSneakers}
+          onClose={() => {
+            setCardOpened(false);
+          }}
+        />
+      )}
+      <Header
+        onClickCart={() => {
+          setCardOpened(true);
+        }}
+      />
       <div className="content p-40">
         <div className="d-flex align-center justify-between mb-40">
           <h1>All sneakers</h1>
@@ -44,6 +51,12 @@ function App() {
               description={x.description}
               imgUrl={x.imgUrl}
               price={x.price}
+              onFavorite={() => {
+                console.log("favorite");
+              }}
+              onPlus={() => {
+                setCartSneakers((prev) => [...prev, x]);
+              }}
             />
           ))}
         </div>

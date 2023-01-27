@@ -1,22 +1,22 @@
 import CardItem from "./CardItem";
 
-function Drawer() {
+function Drawer({ items = [], onClose }) {
   return (
-    <div className="overlay" style={{ display: "none" }}>
+    <div className="overlay">
       <div className="drawer">
         <h2 className="mb-30 d-flex justify-between">
           Корзина
-          <img className="removeBtn" src="/img/btn-remove.svg" alt="remove" />
+          <img
+            onClick={onClose}
+            className="removeBtn"
+            src="/img/btn-remove.svg"
+            alt="remove"
+          />
         </h2>
         <div className="items flex">
-          <CardItem />
-          <CardItem />
-          <CardItem />
-          <CardItem />
-          <CardItem />
-          <CardItem />
-          <CardItem />
-          <CardItem />
+          {items.map((item) => (
+            <CardItem key={item.imgUrl} item={item} />
+          ))}
         </div>
         <div className="cartTotalBlock">
           <ul>

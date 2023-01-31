@@ -1,66 +1,128 @@
-import Card from "./components/Card";
-import Header from "./components/Header";
-import Drawer from "./components/Drawer";
+import { Routes, Route } from "react-router-dom";
+import Favorites from "./pages/Favorites";
+import Home from "./pages/Home";
 import React from "react";
+import axios from "axios";
+import Drawer from "./components/Drawer";
+import Header from "./components/Header";
 
 function App() {
-  const [cardOpened, setCardOpened] = React.useState(false);
-  const [cartSneakers, setCartSneakers] = React.useState([]);
-  const [sneakers, setSneakers] = React.useState([]);
+  const [cardOpened, setCartOpened] = React.useState(false);
+  const [cartUsers, setCartUsers] = React.useState([]);
+  // const [favoriteUsers, setFavoriteUsers] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
+  const [searchValue, setSearchValue] = React.useState("");
 
   React.useEffect(() => {
-    var requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
-    fetch("https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/Items", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setSneakers(result);
-      })
-      .catch((error) => console.log("error", error));
+    axios
+      .get("https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/items")
+      .then((res) => {
+        setUsers(res.data);
+      });
+    axios
+      .get("https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/cart")
+      .then((res) => {
+        setCartUsers(res.data);
+      });
   }, []);
+
+  const removeCartUser = async (id) => {
+    try {
+      const response = await axios.delete(
+        "https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/cart/" + id
+      );
+      console.log(response);
+      setCartUsers((prev) => prev.filter((x) => x.id !== id));
+    } catch (error) {
+      console.log(error);
+      alert("error wher removed user from cart");
+    }
+  };
+
+  const addToCart = (user) => {
+    if (cartUsers.find((item) => item.id === user.id)) {
+      axios
+        .delete("https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/cart/" + user.id)
+        .then(() => {
+          setCartUsers((prev) => prev.filter((item) => item.id !== user.id));
+        })
+        .catch((error) => {
+          // console.log(error);
+          alert("error when removing user");
+        });
+    } else {
+      axios
+        .post("https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/cart", user)
+        .then(() => {
+          setCartUsers((prev) => [...prev, user]);
+        })
+        .catch((error) => {
+          // console.log(error);
+          alert("Error when added to cart");
+        });
+    }
+  };
+
+  const addToFavorite = (user) => {
+    addToCart(user);
+    console.log(user);
+    // if (favoriteUsers.find((item) => item.id === user.id)) {
+    //   axios.delete(
+    //     "https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/favorites/" + user.id
+    //   );
+    //   setFavoriteUsers((prev) => prev.filter((item) => item.id !== user.id));
+    // } else {
+    //   axios.post("https://63d3bfdfc1ba499e54c7d4c9.mockapi.io/favorites", user);
+    //   setFavoriteUsers((prev) => [...prev, user]);
+    // }
+  };
+
+  const onChangeSearchInput = (event) => {
+    setSearchValue(event.target.value);
+  };
 
   return (
     <div className="wrapper clear">
       {cardOpened && (
         <Drawer
-          items={cartSneakers}
+          users={cartUsers}
+          removeCartItem={removeCartUser}
           onClose={() => {
-            setCardOpened(false);
+            setCartOpened(false);
           }}
         />
       )}
       <Header
         onClickCart={() => {
-          setCardOpened(true);
+          setCartOpened(true);
         }}
       />
-      <div className="content p-40">
-        <div className="d-flex align-center justify-between mb-40">
-          <h1>All sneakers</h1>
-          <div className="search-block">
-            <img src="/img/search.svg" alt="Search" />
-            <input type="text" placeholder="Search" />
-          </div>
-        </div>
-        <div className="d-flex flex-wrap">
-          {sneakers.map((x) => (
-            <Card
-              key={x.imgUrl}
-              description={x.description}
-              imgUrl={x.imgUrl}
-              price={x.price}
-              onFavorite={() => {
-                console.log("favorite");
-              }}
-              onPlus={() => {
-                setCartSneakers((prev) => [...prev, x]);
-              }}
+      <Routes>
+        <Route
+          exact
+          path="/"
+          element={
+            <Home
+              users={users}
+              searchValue={searchValue}
+              onChangeSearchInput={onChangeSearchInput}
+              addToCart={addToCart}
+              addToFavorite={addToFavorite}
             />
-          ))}
-        </div>
-      </div>
+          }
+        ></Route>
+        <Route
+          exact
+          path="/favorites"
+          element={
+            <Favorites
+              users={cartUsers}
+              addToCart={addToCart}
+              addToFavorite={addToCart}
+            />
+          }
+        ></Route>
+      </Routes>
     </div>
   );
 }

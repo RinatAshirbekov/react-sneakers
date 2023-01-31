@@ -1,16 +1,24 @@
-function CardItem({ item }) {
-  console.log(item);
+function CardItem({ item, remove }) {
+  // console.log(item);
+  // console.log(remove);
   return (
     <div className="cartItem">
       <div
-        style={{ backgroundImage: `url("${item.imgUrl}")` }}
+        style={{ backgroundImage: `url("${item.avatar}")` }}
         className="cartItemImg"
       ></div>
       <div className="mr-20 flex">
-        <p className="mb-5">{item.description}</p>
-        <b>{item.price} руб.</b>
+        <p className="mb-5">{item.name}</p>
+        <b>Date: {item.createdAt} </b>
       </div>
-      <img className="removeBtn" src="/img/btn-remove.svg" alt="remove" />
+      <img
+        onClick={() => {
+          remove(item.id);
+        }}
+        className="removeBtn"
+        src="/img/btn-remove.svg"
+        alt="remove"
+      />
     </div>
   );
 }

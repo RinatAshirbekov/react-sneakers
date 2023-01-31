@@ -1,39 +1,40 @@
 import React from "react";
 import styles from "./Card.module.scss";
-console.log(styles);
-function Card(props) {
+function Card({ user, addToCart, addToFavorite, favorited = false }) {
   const [isAdded, setIsAdded] = React.useState(false);
-  // const onClickPlus = () => {
-  //   setIsAdded(!isAdded);
-  // };
-
-  React.useEffect(() => {
-    console.log("isAdded izmenilsya");
-  }, [isAdded]);
-  // const onClickButton = (a, b, c) => {
-  //   console.log(a.target);
-  //   console.log(b + c);
-  // };
+  const [isFavorite, setIsFavorite] = React.useState(favorited);
 
   return (
     <div className={styles.card}>
-      <div className={styles.favorite} onClick={props.onFavorite}>
-        <img src="/img/heart-unliked.svg" alt="" />
+      <div
+        className={styles.favorite}
+        onClick={() => {
+          addToFavorite(user);
+          setIsFavorite(!isFavorite);
+        }}
+      >
+        <img
+          src={isFavorite ? "/img/heart-liked.svg" : "/img/heart-unliked.svg"}
+          alt=""
+        />
       </div>
-      <img width={133} height={112} src={props.imgUrl} alt="Sneakers" />
-      <h5>{props.description}</h5>
+      <img
+        width={133}
+        height={112}
+        src={user.avatar}
+        alt={user.name}
+        style={{ borderRadius: "20px" }}
+      />
+      <h5>{user.name}</h5>
       <div className="d-flex justify-between align-center">
         <div className="d-flex flex-column">
           <span>Цена: </span>
-          <b>{props.price} rub.</b>
+          <b>Date: {user.date} </b>
         </div>
-        {/* <button className="button" onClick={(a) => props.onPlus()}>
-          <img width={11} height={11} src="/img/btn-plus.svg" alt="Plus" />
-        </button> */}
         <img
           className={styles.plus}
           onClick={() => {
-            props.onPlus();
+            addToCart(user);
             setIsAdded(!isAdded);
           }}
           src={isAdded ? "/img/btn-checked.svg" : "/img/btn-plus.svg"}
